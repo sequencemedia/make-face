@@ -10,7 +10,7 @@ npm install
 ## Run from the command line
 
 ```
-node make-face -s ./src/file/path -c ./css/file/path
+node make-face -s ~/src/file/path -c ~/css/file/path
 ```
 * To run without logging, use the `--silent` option
 
@@ -19,8 +19,8 @@ node make-face -s ./src/file/path -c ./css/file/path
 ```
 var makeFace = require('make-face').makeFace;
 
-var srcPath = './src/file/path';
-var cssPath = './css/file/path';
+var srcPath = '~/src/file/path';
+var cssPath = '~/css/file/path';
 
 makeFace(srcPath, cssPath)
   .then(() => console.log('Done'));
@@ -30,8 +30,8 @@ makeFace(srcPath, cssPath)
 ```
 import { makeFace } from 'make-face'
 
-const srcPath = './src/file/path'
-const cssPath = './css/file/path'
+const srcPath = '~/src/file/path'
+const cssPath = '~/css/file/path'
 
 makeFace(srcPath, cssPath)
   .then(() => console.log('Done'))
@@ -46,7 +46,7 @@ Read `css` files from the file system. Each key is the CSS file path, and each v
 ```
 var readFace = require('make-face').readFace;
 
-var path = './css/file/path';
+var path = '~/css/file/path';
 
 readFace(path)
   .then((data) => console.log(data));
@@ -56,7 +56,7 @@ readFace(path)
 ```
 import { readFace } from 'make-face'
 
-const path = './css/file/path'
+const path = '~/css/file/path'
 
 readFace(path)
   .then((data) => console.log(data))
