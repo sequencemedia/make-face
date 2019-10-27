@@ -243,17 +243,16 @@ export const readFace = (PATH) => (
 
 const transformFilePathList = (filePathList) => filePathList.reduce((accumulator, { filePath, fileData }) => ({ ...accumulator, [filePath]: fileData.toString('utf8') }), {})
 
-const transformToFile = (data) => (
-  Object.entries(data)
-    .reduce((accumulator, [filePath, fileData]) => (
-      accumulator
-        .concat(`
+const createFileLine = (filePath, fileData) => (`
 /**
  * \`${filePath}\`
  */
-${fileData.toString('utf8').replace(/^\n+|\n+$/g, '')}
+${fileData.replace(/^\n+|\n+$/g, '')}
 `)
-    ), '')
+
+const transformToFile = (data) => (
+  Object.entries(data)
+    .reduce((accumulator, [filePath, fileData]) => accumulator.concat(createFileLine(filePath, fileData)), '')
 )
 
 export const readFaceFromCMD = (SILENT, PATH, FILE) => (
