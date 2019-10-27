@@ -1,5 +1,5 @@
 {
-  "name": "make-face",
+  "name": "@sequencemedia/make-face",
   "version": "0.0.4",
   "description": "Convert font files into CSS @font-face declarations with embedded Base64 data",
   "keywords": [
@@ -19,7 +19,9 @@
   ],
   "main": "./index.js",
   "scripts": {
-    "eslint": "eslint ./lib ./log ./constants"
+    "lint": "eslint src",
+    "lint:fix": "npm run lint -- --fix",
+    "build": "babel src -d lib"
   },
   "author": {
     "name": "Jonathan Perry for Sequence Media Limited",
@@ -28,33 +30,28 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/rma-consulting/make-face.git"
+    "url": "git+https://github.com/sequencemedia/make-face.git"
   },
   "license": "UNLICENSED",
   "dependencies": {
-    "chalk": "^1.1.3",
-    "commander": "^2.9.0",
-    "fs-extra": "^0.30.0",
+    "chalk": "^2.4.2",
+    "commander": "^3.0.2",
+    "fs-extra": "^8.1.0",
     "glob-all": "^3.1.0",
-    "mime": "^1.3.4",
-    "sacred-fs": "^0.0.4"
+    "mime": "^2.4.4",
+    "sacred-fs": "^1.0.13"
   },
   "devDependencies": {
-    "babel-eslint": "^6.1.0",
-    "eslint-config-standard": "^5.3.5",
-    "eslint-plugin-promise": "^1.3.2",
-    "eslint-plugin-standard": "^1.3.2",
-    "standard": "^7.1.2"
-  },
-  "peerDependencies": {
-    "babel-core": "^6.10.4",
-    "babel-plugin-transform-class-properties": "^6.9.1",
-    "babel-plugin-transform-object-rest-spread": "^6.8.0",
-    "babel-plugin-transform-runtime": "^6.9.0",
-    "babel-preset-es2015": "^6.1.18",
-    "babel-preset-stage-0": "^6.5.0",
-    "babel-preset-stage-1": "^6.3.13",
-    "babel-register": "^6.9.0",
-    "babel-runtime": "^6.9.2"
+    "@babel/cli": "^7.6.4",
+    "@babel/core": "^7.6.4",
+    "@babel/preset-env": "^7.6.3",
+    "@babel/register": "^7.6.2",
+    "babel-eslint": "^10.0.3",
+    "eslint": "^6.5.1",
+    "eslint-config-standard": "^14.1.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-node": "^10.0.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1"
   }
 }

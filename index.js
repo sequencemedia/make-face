@@ -1,9 +1,9 @@
-require('babel-register')({ ignore: /!(make-face\/lib)/ })
-
-const lib = require('./lib')
+const {
+  makeFace,
+  readFace
+} = require('./lib')
 
 module.exports = {
-  makeFace: lib.makeFace,
-  readFace: lib.readFace
+  makeFace,
+  readFace
 }
-

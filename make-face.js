@@ -1,7 +1,5 @@
 #!/usr/bin/env node
 
-require('babel-register')({ ignore: /!(make-face\/lib)/ })
-
 const fs = require('fs')
 /*
 http://stackoverflow.com/questions/9153571/is-there-a-way-to-get-version-from-package-json-in-nodejs-code
