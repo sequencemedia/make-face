@@ -21,7 +21,8 @@
   "scripts": {
     "lint": "eslint src",
     "lint:fix": "npm run lint -- --fix",
-    "build": "babel src -d lib"
+    "build": "babel src -d lib",
+    "pre-commit": "npm run lint && npm run build && git add lib"
   },
   "author": {
     "name": "Jonathan Perry for Sequence Media Limited",
@@ -52,6 +53,12 @@
     "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-node": "^10.0.0",
     "eslint-plugin-promise": "^4.2.1",
-    "eslint-plugin-standard": "^4.0.1"
+    "eslint-plugin-standard": "^4.0.1",
+    "husky": "^3.0.9"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run pre-commit"
+    }
   }
 }
