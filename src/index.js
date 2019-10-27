@@ -42,8 +42,8 @@ const mapFilePathListToFS = (filePathList) => (
   Promise.all(
     filePathList.map(
       ({ filePath, fileData }) => ensureFile(filePath)
-        .then(() => writeFile(filePath, fileData)
-        )
+        .then(() => writeFile(filePath, fileData))
+        .then(() => filePathList)
     )
   )
 )
@@ -61,7 +61,7 @@ function srcStat (p) {
   return stat(SRC_PATH)
     .then(() => p)
     .catch((e) => {
-      throw Error(getStatError(e, SRC_PATH))
+      throw new Error(getStatError(e, SRC_PATH))
     })
 }
 
@@ -70,7 +70,7 @@ function cssStat (p) {
   return stat(CSS_PATH)
     .then(() => p)
     .catch((e) => {
-      throw Error(getStatError(e, CSS_PATH))
+      throw new Error(getStatError(e, CSS_PATH))
     })
 }
 
@@ -229,25 +229,31 @@ export const readFace = (PATH) => (
       return stat(PATH)
         .then(() => p)
         .catch((e) => {
-          throw Error(getStatError(e, PATH))
+          throw new Error(getStatError(e, PATH))
         })
     })
     .then(({ PATH }) => path.join(PATH, '**/*.css'))
     .then(getFilePathList)
     .then(mapFilePathListFromFS)
-    .then((filePathList) => (
-      filePathList.reduce((accumulator, { filePath, fileData }) => {
-        const n = path.basename(filePath)
-        const f = path.relative(PATH, filePath).replace(n, getFileNameFromFilePath(n))
-        return {
-          ...accumulator,
-          [f]: fileData.toString('utf8')
-        }
-      }, {})
-    ))
+    .then(transformFilePathList)
     .catch(({ message }) => {
       log.decorateError(message)
     })
+)
+
+const transformFilePathList = (filePathList) => filePathList.reduce((accumulator, { filePath, fileData }) => ({ ...accumulator, [filePath]: fileData.toString('utf8') }), {})
+
+const transformToFile = (data) => (
+  Object.entries(data)
+    .reduce((accumulator, [filePath, fileData]) => (
+      accumulator
+        .concat(`
+/**
+ * \`${filePath}\`
+ */
+${fileData.toString('utf8').replace(/^\n+|\n+$/g, '')}
+`)
+    ), '')
 )
 
 export const readFaceFromCMD = (SILENT, PATH, FILE) => (
@@ -255,7 +261,8 @@ export const readFaceFromCMD = (SILENT, PATH, FILE) => (
     ? readFace(PATH)
       .then((data) => (
         ensureFile(FILE)
-          .then(() => writeFile(FILE, data))
+          .then(() => writeFile(FILE, transformToFile(data)))
+          .then(() => data)
       ))
     : Promise.resolve({ PATH })
       .then((p) => {
@@ -263,7 +270,7 @@ export const readFaceFromCMD = (SILENT, PATH, FILE) => (
         return stat(PATH)
           .then(() => p)
           .catch((e) => {
-            throw Error(getStatError(e, PATH))
+            throw new Error(getStatError(e, PATH))
           })
       })
       .then(({ PATH }) => path.join(PATH, '**/*.css'))
@@ -273,24 +280,16 @@ export const readFaceFromCMD = (SILENT, PATH, FILE) => (
         return filePathList
       })
       .then(mapFilePathListFromFS)
-      .then((filePathList) => (
-        filePathList.reduce((accumulator, { filePath, fileData }) => {
-          const n = path.basename(filePath)
-          const f = path.relative(PATH, filePath).replace(n, getFileNameFromFilePath(n))
-          return {
-            ...accumulator,
-            [f]: fileData.toString('utf8')
-          }
-        }, {})
+      .then(transformFilePathList)
+      .then((data) => (
+        ensureFile(FILE)
+          .then(() => writeFile(FILE, transformToFile(data)))
+          .then(() => data)
       ))
       .then((data) => {
         log.decorateFile(FILE)
         return data
       })
-      .then((data) => (
-        ensureFile(FILE)
-          .then(() => writeFile(FILE, JSON.stringify(data)))
-      ))
       .catch(({ message }) => {
         log.decorateError(message)
       })
