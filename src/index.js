@@ -1,3 +1,4 @@
+import debug from 'debug'
 import fs from 'fs-extra'
 import path from 'path'
 import mime from 'mime'
@@ -8,9 +9,9 @@ import {
   readFile
 } from 'sacred-fs'
 
-import * as log from './log'
-
 import CONSTANTS from './constants'
+
+const log = debug('@sequencemedia/make-face')
 
 const SRC_PATH_PATTERN = `**/?(${CONSTANTS.formats.sort().map((format) => `*.${format}`).join('|')})`
 
@@ -190,7 +191,7 @@ export const makeFace = (SRC_PATH, CSS_PATH) => (
     .then((filePathList) => createCSSFilePathListFromSrcFilePathList(filePathList, SRC_PATH, CSS_PATH))
     .then(mapFilePathListToFS)
     .catch(({ message }) => {
-      log.decorateError(message)
+      log(message)
     })
 )
 
@@ -201,24 +202,24 @@ export const makeFaceFromCMD = (SILENT, SRC_PATH, CSS_PATH) => (
       .then(srcStat)
       .then(cssStat)
       .then(() => {
-        log.decorateSrcPath(SRC_PATH)
-        log.decorateCSSPath(CSS_PATH)
+        log(SRC_PATH)
+        log(CSS_PATH)
       })
       .then(() => path.join(SRC_PATH, SRC_PATH_PATTERN))
       .then(getFilePathList)
       .then((filePathList) => {
-        log.decorateSrcFilePathList(filePathList)
+        log(filePathList)
         return filePathList
       })
       .then(mapFilePathListFromFS)
       .then((filePathList) => createCSSFilePathListFromSrcFilePathList(filePathList, SRC_PATH, CSS_PATH))
       .then((filePathList) => {
-        log.decorateCSSFilePathList(filePathList)
+        log(filePathList)
         return filePathList
       })
       .then(mapFilePathListToFS)
       .catch(({ message }) => {
-        log.decorateError(message)
+        log(message)
       })
 )
 
@@ -237,7 +238,7 @@ export const readFace = (PATH) => (
     .then(mapFilePathListFromFS)
     .then(transformFilePathList)
     .catch(({ message }) => {
-      log.decorateError(message)
+      log(message)
     })
 )
 
@@ -275,7 +276,7 @@ export const readFaceFromCMD = (SILENT, PATH, FILE) => (
       .then(({ PATH }) => path.join(PATH, '**/*.css'))
       .then(getFilePathList)
       .then((filePathList) => {
-        log.decorateFilePathList(filePathList)
+        log(filePathList)
         return filePathList
       })
       .then(mapFilePathListFromFS)
@@ -286,10 +287,10 @@ export const readFaceFromCMD = (SILENT, PATH, FILE) => (
           .then(() => data)
       ))
       .then((data) => {
-        log.decorateFile(FILE)
+        log(FILE)
         return data
       })
       .catch(({ message }) => {
-        log.decorateError(message)
+        log(message)
       })
 )

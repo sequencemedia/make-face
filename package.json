@@ -18,43 +18,53 @@
     "woff2"
   ],
   "main": "./index.js",
-  "scripts": {
-    "lint": "eslint src",
-    "lint:fix": "npm run lint -- --fix",
-    "build": "babel src -d lib",
-    "pre-commit": "npm run lint && npm run build && git add lib"
-  },
   "author": {
     "name": "Jonathan Perry for Sequence Media Limited",
     "email": "sequencemedia@sequencemedia.net",
     "url": "http://sequencemedia.net"
   },
+  "license": "UNLICENSED",
+  "engines": {
+    "node": ">=12.18.1"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/sequencemedia/make-face.git"
   },
-  "license": "UNLICENSED",
+  "scripts": {
+    "build": "npm run babel",
+    "build:watch": "npm run babel:watch",
+    "babel": "babel src -d lib",
+    "babel:watch": "npm run babel -- -w",
+    "clean": "rimraf lib",
+    "prepublishOnly": "npm run build",
+    "prebuild": "npm run clean",
+    "lint": "eslint .",
+    "lint:fix": "npm run lint -- --fix",
+    "pre-commit": "npm run lint && npm run build && git add lib"
+  },
   "dependencies": {
-    "chalk": "^3.0.0",
-    "commander": "^5.0.0",
-    "fs-extra": "^9.0.0",
+    "commander": "^5.1.0",
+    "debug": "^4.1.1",
+    "fs-extra": "^9.0.1",
     "glob-all": "^3.2.1",
-    "mime": "^2.4.4",
-    "sacred-fs": "^1.0.15"
+    "mime": "^2.4.6",
+    "sacred-fs": "^1.0.17"
   },
   "devDependencies": {
-    "@babel/cli": "^7.8.4",
-    "@babel/core": "^7.9.0",
-    "@babel/preset-env": "^7.9.0",
-    "@babel/register": "^7.9.0",
+    "@babel/cli": "^7.10.3",
+    "@babel/core": "^7.10.3",
+    "@babel/preset-env": "^7.10.3",
+    "@babel/register": "^7.10.3",
     "babel-eslint": "^10.1.0",
-    "eslint": "^6.8.0",
+    "eslint": "^7.3.1",
     "eslint-config-standard": "^14.1.1",
-    "eslint-plugin-import": "^2.20.2",
+    "eslint-plugin-import": "^2.22.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1",
-    "husky": "^4.2.3"
+    "husky": "^4.2.5",
+    "rimraf": "^3.0.2"
   },
   "husky": {
     "hooks": {

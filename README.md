@@ -3,20 +3,22 @@
 Convert `otf`, `ttf`, `eot`, `svg` or `woff` font files to CSS `@font-face {}` declarations with data embedded in `Base64`.
 
 Always:
-```
+
+```bash
 npm install
 ```
 
 ## Run from the command line
 
-```
+```bash
 node make-face -s ~/src/file/path -c ~/css/file/path
 ```
+
 * To run without logging, use the `--silent` option
 
 ## Import using RequireJS
 
-```
+```javascript
 var makeFace = require('make-face').makeFace;
 
 var srcPath = '~/src/file/path';
@@ -27,7 +29,8 @@ makeFace(srcPath, cssPath)
 ```
 
 ## Import using ES6
-```
+
+```javascript
 import { makeFace } from 'make-face'
 
 const srcPath = '~/src/file/path'
@@ -43,7 +46,7 @@ Read `css` files from the file system. Each key is the CSS file path, and each v
 
 ### Using RequireJS
 
-```
+```javascript
 var readFace = require('make-face').readFace;
 
 var path = '~/css/file/path';
@@ -53,7 +56,8 @@ readFace(path)
 ```
 
 ### Using ES6
-```
+
+```javascript
 import { readFace } from 'make-face'
 
 const path = '~/css/file/path'
