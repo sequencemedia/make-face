@@ -26,7 +26,18 @@ const ensureFile = (filePath) => (
 )
 
 /**
- *  @returns {Promise}
+ *  @returns {String}
+ */
+const getStatError = (e, p) => (
+  (e.code === 'ENOENT')
+    ? `Path "${p}" does not exist.`
+    : (p)
+      ? `An error occurred on path "${p}": ${e.message}`
+      : 'Path is not defined.'
+)
+
+/**
+ *  @returns {Promise<Buffer>}
  */
 async function readFileFromFS (filePath) {
   /*
@@ -104,14 +115,6 @@ function readFileDataListFromFS (filePathList) {
   )
 }
 
-const getStatError = (e, p) => (
-  (e.code === 'ENOENT')
-    ? `Path "${p}" does not exist.`
-    : (p)
-      ? `An error occurred on path "${p}": ${e.message}`
-      : 'Path is not defined.'
-)
-
 /**
  *  @returns {Promise}
  */
@@ -140,6 +143,9 @@ const getCSSFileGlob = (directory) => path.join(directory, CSS_GLOB)
  *  @returns {Promise<Array>}
  */
 function getFilePathList (filePath) {
+  /*
+   *  log('getFilePathList')
+   */
   return new Promise((resolve, reject) => {
     glob(filePath, (e, filePathList) => (!e) ? resolve(filePathList) : reject(e))
   })
@@ -149,6 +155,9 @@ function getFilePathList (filePath) {
  *  @returns {Array}
  */
 function getSrcFilePathList (directory) {
+  /*
+   *  log('getSrcFilePathList')
+   */
   return (
     getFilePathList(getSrcFileGlob(directory))
   )
@@ -158,6 +167,9 @@ function getSrcFilePathList (directory) {
  *  @returns {Array}
  */
 function getCSSFilePathList (directory) {
+  /*
+   *  log('getCSSFilePathList')
+   */
   return (
     getFilePathList(getCSSFileGlob(directory))
   )
@@ -167,8 +179,14 @@ function getCSSFilePathList (directory) {
  *  @returns {Boolean}
  */
 function findCSSFilePathFactory (cssFilePath, srcPath, cssPath) {
+  /*
+   *  log('findCSSFilePathFactory')
+   */
   return function findCSSFilePath ({ filePath }) {
-    return cssFilePath === transformSrcFilePathToCSSFilePath(filePath, srcPath, cssPath)
+    /*
+     *  log('findCSSFilePath')
+     */
+    return cssFilePath === getCSSFilePathFromSrcFilePath(filePath, srcPath, cssPath)
   }
 }
 
@@ -181,7 +199,11 @@ const getFontMimeType = (filePath) => mime.getType(filePath)
  *  @returns {String}
  */
 function getFontFormat (filePath) {
+  /*
+   *  log('getFontFormat')
+   */
   const extension = path.extname(filePath).slice(1).toLowerCase()
+
   switch (extension) {
     case 'ttf':
       return 'truetype'
@@ -197,7 +219,18 @@ function getFontFormat (filePath) {
 /**
  *  @returns {String}
  */
-const transformSrcFilePathToCSSFilePath = (filePath, srcPath, cssPath) => filePath.replace(new RegExp(path.extname(filePath).concat('$')), '.css').replace(new RegExp('^'.concat(srcPath)), cssPath)
+function getCSSFilePathFromSrcFilePath (filePath, srcPath, cssPath) {
+  /*
+   *  log('getCSSFilePathFromSrcFilePath')
+   */
+  const extName = path.extname(filePath)
+
+  return (
+    filePath
+      .replace(new RegExp(extName.concat('$')), '.css')
+      .replace(new RegExp('^'.concat(srcPath)), cssPath)
+  )
+}
 
 /**
  *  @returns {String}
@@ -217,14 +250,22 @@ const transformToSrc = (filePathList) => filePathList.map(({ filePath, fileData 
 /**
  *  @returns {String}
  */
-const transformCSSFileDataListLine = (filePath, fileData) => (`
+const transformCSSFileDataListLine = (filePath, fileData) => {
+  /*
+   *  log('transformCSSFileDataListLine')
+   */
+  return `
 /**
  *  "${filePath}"
  */
 ${fileData.toString('utf8').replace(/^.*\/\*\*.*\n(?: \* +".*"\n)+ \*\/\n/gm, '').replace(/^\n+|\n+$/g, '')}
-`)
+`
+}
 
 const transformCSSFilePathList = (filePathList) => {
+  /*
+   *  log('transformCSSFilePathList')
+   */
   const [
     {
       filePath
@@ -241,10 +282,15 @@ ${filePathList.map(({ filePath }) => ` *  "${filePath}"`).join('\n')}
 `
 }
 
-const transformCSSFileDataList = (fileDataList) => (
-  fileDataList
-    .reduce((accumulator, { filePath, fileData }) => accumulator.concat(transformCSSFileDataListLine(filePath, fileData)), '')
-)
+const transformCSSFileDataList = (fileDataList) => {
+  /*
+   *  log('transformCSSFileDataList')
+   */
+  return (
+    fileDataList
+      .reduce((accumulator, { filePath, fileData }) => accumulator.concat(transformCSSFileDataListLine(filePath, fileData)), '')
+  )
+}
 
 /**
  *  @returns {Buffer}
@@ -259,8 +305,11 @@ const createCSSFileDataFromCSSFileDataList = (fileDataList) => Buffer.from(trans
 /**
  *  @returns {Object}
  */
-const transformToCSSFileDataFromCSSFileDataList = (fileDataList, cssFilePath) => {
-  const cssFileData = createCSSFileDataFromCSSFileDataList(fileDataList)
+function transformToCSSFileDataFromCSSFileDataList (cssFileDataList, cssFilePath) {
+  /*
+   *  log('transformToCSSFileDataFromCSSFileDataList')
+   */
+  const cssFileData = createCSSFileDataFromCSSFileDataList(cssFileDataList)
 
   return {
     filePath: cssFilePath,
@@ -272,12 +321,15 @@ const transformToCSSFileDataFromCSSFileDataList = (fileDataList, cssFilePath) =>
  *  @returns {Array}
  */
 function transformToCSSFileDataListFromSrcFilePathList (srcFilePathList, srcPath, cssPath) {
+  /*
+   *  log('transformToCSSFileDataListFromSrcFilePathList')
+   */
   return (
     srcFilePathList.reduce((accumulator, { filePath: srcFilePath }) => { // , index, array) => {
       /*
        *  Create the css file path
        */
-      const cssFilePath = transformSrcFilePathToCSSFilePath(srcFilePath, srcPath, cssPath)
+      const cssFilePath = getCSSFilePathFromSrcFilePath(srcFilePath, srcPath, cssPath)
 
       /*
        *  Create a filter function using the css file path
@@ -381,11 +433,7 @@ export async function readFace (origin, destination) {
     return (
       cssFileData
     )
-  } catch (e) {
-    const { message } = e
-
+  } catch ({ message }) {
     log(message)
-
-    log(e)
   }
 }
