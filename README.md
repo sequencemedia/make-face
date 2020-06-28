@@ -20,6 +20,8 @@ node read-face -f ~/from/file/path -t ~/to/file/path/file.css
 
 ## Make Face
 
+Read font files from the file system and transform them to `css` files.
+
 ### Import using JS
 
 ```javascript
