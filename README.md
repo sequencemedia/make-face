@@ -1,6 +1,6 @@
 # Make Face
 
-Convert `otf`, `ttf`, `eot`, `svg` or `woff` font files to CSS `@font-face {}` declarations with data embedded in `Base64`.
+Convert `otf`, `ttf`, `eot`, `svg`, `woff`, or `woff2` font files to CSS `@font-face {}` declarations with embedded data as `src: url()` in `Base64`.
 
 Always:
 
