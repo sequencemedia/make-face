@@ -5,63 +5,65 @@ Convert `otf`, `ttf`, `eot`, `svg` or `woff` font files to CSS `@font-face {}` d
 Always:
 
 ```bash
-npm install
+npm i @sequencemedia/make-face
 ```
 
 ## Run from the command line
 
 ```bash
-node make-face -s ~/src/file/path -c ~/css/file/path
+node make-face -f ~/from/file/path -t ~/to/file/path
 ```
 
-* To run without logging, use the `--silent` option
+```bash
+node read-face -f ~/from/file/path -t ~/to/file/path/file.css
+```
 
-## Import using RequireJS
+## Make Face
+
+### Import using JS
 
 ```javascript
 var makeFace = require('make-face').makeFace;
 
-var srcPath = '~/src/file/path';
-var cssPath = '~/css/file/path';
+var fromDirectory = '~/origin/file/path';
+var toDirectory = '~/css/file/path';
 
-makeFace(srcPath, cssPath)
-  .then(() => console.log('Done'));
+makeFace(fromDirectory, toDirectory);
 ```
 
-## Import using ES6
+### Import using ES
 
 ```javascript
 import { makeFace } from 'make-face'
 
-const srcPath = '~/src/file/path'
-const cssPath = '~/css/file/path'
+const fromDirectory = '~/origin/file/path'
+const toDirectory = '~/destination/file/path'
 
-makeFace(srcPath, cssPath)
-  .then(() => console.log('Done'))
+makeFace(fromDirectory, toDirectory)
 ```
 
 ## Read Face
 
-Read `css` files from the file system. Each key is the CSS file path, and each value is the file data, as a string.
+Read `css` files from the file system and concatenate them to another `css` file.
 
-### Using RequireJS
+### Using JS
 
 ```javascript
 var readFace = require('make-face').readFace;
 
-var path = '~/css/file/path';
+var fromDirectory = '~/origin/file/path';
+var toFile = '~/destination/file/path/file.css';
 
-readFace(path)
-  .then((data) => console.log(data));
+readFace(fromDirectory, toFile);
 ```
 
-### Using ES6
+### Using ES
 
 ```javascript
 import { readFace } from 'make-face'
 
-const path = '~/css/file/path'
+const fromDirectory = '~/src/file/path'
+const toFile = '~/destination/file/path/file.css'
 
-readFace(path)
-  .then((data) => console.log(data))
+readFace(fromDirectory, toFile)
 ```

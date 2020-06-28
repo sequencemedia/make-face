@@ -1,29 +1,27 @@
 #!/usr/bin/env node
 
-const debug = require('debug')
 const commander = require('commander')
-const { version } = require('./package')
-const lib = require('./lib')
 
 const {
-  argv,
-  env: {
-    DEBUG = '@sequencemedia/make-face'
-  }
+  version
+} = require('./package')
+
+const {
+  readFace
+} = require('./lib')
+
+const {
+  argv
 } = process
 
 commander
   .version(version)
-  .option('-p, --path <path>', 'The location from which to read CSS files')
-  .option('-f, --file <file>', 'The file to which to write the object')
-  .option('--silent', 'Silent running')
+  .option('-f, --from-directory <directory path>', 'The directory from which to read the CSS files')
+  .option('-t, --to-file <file path>', 'The CSS file in which to write the concatenated CSS files')
   .parse(argv)
-
-debug.enable(DEBUG)
 
 /*
  *  TODO:
  *  maxBuffer!
  */
-lib.readFaceFromCMD(commander.silent, commander.path, commander.file)
-  .then(() => process.exit())
+readFace(commander.fromDirectory, commander.toFile)

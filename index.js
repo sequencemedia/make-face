@@ -1,9 +1,3 @@
-const {
-  makeFace,
-  readFace
-} = require('./lib')
+//
 
-module.exports = {
-  makeFace,
-  readFace
-}
+module.exports = require('./lib')

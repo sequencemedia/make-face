@@ -13,10 +13,11 @@ import CONSTANTS from './constants'
 
 const log = debug('@sequencemedia/make-face')
 
-const SRC_PATH_PATTERN = `**/?(${CONSTANTS.formats.sort().map((format) => `*.${format}`).join('|')})`
+const SRC_GLOB = `**/?(${CONSTANTS.formats.sort().map((format) => `*.${format}`).join('|')})`
+const CSS_GLOB = '**/*.css'
 
 /*
- *  A Promise interface for ensuring a file path exists on the file system
+ *  Ensure a file path exists on the file system
  */
 const ensureFile = (filePath) => (
   new Promise((resolve, reject) => {
@@ -24,56 +25,100 @@ const ensureFile = (filePath) => (
   })
 )
 
-/*
- *  Read each file in a file path list to an object
- */
-const mapFilePathListFromFS = (filePathList) => (
-  Promise.all(
-    filePathList.map(
-      (filePath) => readFile(filePath)
-        .then((fileData) => ({ filePath, fileData }))
-    )
+async function readFileFromFS (filePath) {
+  /*
+   *  log('readFileFromFS')
+   */
+  await ensureFile(filePath)
+
+  return (
+    readFile(filePath)
   )
-)
+}
+
+async function writeFileToFS (filePath, fileData) {
+  /*
+   *  log('writeFileToFS')
+   */
+  await ensureFile(filePath)
+
+  return (
+    writeFile(filePath, fileData)
+  )
+}
+
+async function mapFilePathFromFS (filePath) {
+  /*
+   *  log('mapFilePathFromFS')
+   */
+  const fileData = await readFileFromFS(filePath)
+
+  return {
+    filePath,
+    fileData
+  }
+}
+
+async function mapFilePathToFS (filePath, fileData) {
+  /*
+   *  log('mapFilePathToFS')
+   */
+  await writeFileToFS(filePath, fileData)
+
+  return {
+    filePath,
+    fileData
+  }
+}
 
 /*
- *  Write each object in the file path list to a file
+ *  Read each file path in a file path list to an array of objects with file path and file data fields
  */
-const mapFilePathListToFS = (filePathList) => (
-  Promise.all(
-    filePathList.map(
-      ({ filePath, fileData }) => ensureFile(filePath)
-        .then(() => writeFile(filePath, fileData))
-        .then(() => filePathList)
-    )
+function mapFilePathListFromFS (filePathList) {
+  /*
+   *  log('mapFilePathListFromFS')
+   */
+  return (
+    Promise.all(filePathList.map(mapFilePathFromFS))
   )
-)
+}
+
+/*
+ *  Write each object with a file path and file data field in the file path list to a file
+ */
+function mapFileDataListToFS (filePathList) {
+  /*
+   *  log('mapFileDataListToFS')
+   */
+  return (
+    Promise.all(filePathList.map(({ filePath, fileData }) => mapFilePathToFS(filePath, fileData)))
+  )
+}
 
 const getStatError = (e, p) => (
   (e.code === 'ENOENT')
-    ? `Path '${p}' does not exist.`
+    ? `Path "${p}" does not exist.`
     : (p)
-      ? `An error occurred on path ${p}: ${e.message}`
+      ? `An error occurred on path "${p}": ${e.message}`
       : 'Path is not defined.'
 )
 
-function srcStat (p) {
-  const { SRC_PATH } = p
-  return stat(SRC_PATH)
-    .then(() => p)
-    .catch((e) => {
-      throw new Error(getStatError(e, SRC_PATH))
-    })
+async function statPath (directory) {
+  /*
+   *  log('statPath')
+   */
+  try {
+    await stat(directory)
+  } catch (e) {
+    throw new Error(getStatError(e, directory))
+  }
 }
 
-function cssStat (p) {
-  const { CSS_PATH } = p
-  return stat(CSS_PATH)
-    .then(() => p)
-    .catch((e) => {
-      throw new Error(getStatError(e, CSS_PATH))
-    })
-}
+const getFileNameFromFilePath = (filePath) => path.basename(filePath, path.extname(filePath))
+
+const getSrcFileGlob = (directory) => path.join(directory, SRC_GLOB)
+const getCSSFileGlob = (directory) => path.join(directory, CSS_GLOB)
+const getCSSFilePath = (directory) => path.join(path.dirname(directory), getFileNameFromFilePath(directory))
 
 function getFilePathList (filePath) {
   return new Promise((resolve, reject) => {
@@ -81,11 +126,27 @@ function getFilePathList (filePath) {
   })
 }
 
-const mapSrcFilePathToCSSFilePath = (filePath, srcPath, cssPath) => filePath.replace(srcPath, cssPath)
+const transformSrcFilePathToCSSFilePath = (filePath, srcPath, cssPath) => filePath.replace(new RegExp(path.extname(filePath).concat('$')), '.css').replace(new RegExp('^'.concat(srcPath)), cssPath)
 
-const getFileNameFromFilePath = (filePath) => path.basename(filePath, path.extname(filePath))
+const getFontMimeType = (filePath) => mime.getType(filePath)
 
-const getFontMimeType = (filePath) => mime.lookup(filePath)
+/**
+ *  @returns {Array}
+ */
+function getSrcFilePathList (directory) {
+  return (
+    getFilePathList(getSrcFileGlob(directory))
+  )
+}
+
+/**
+ *  @returns {Array}
+ */
+function createSrcFilePathList (directory) {
+  return (
+    getFilePathList(getCSSFileGlob(directory))
+  )
+}
 
 function getFontFormat (filePath) {
   const extension = path.extname(filePath).slice(1).toLowerCase()
@@ -101,21 +162,55 @@ function getFontFormat (filePath) {
   }
 }
 
-const url = (filePath, fileData) => `url(data:${getFontMimeType(filePath)};base64,${fileData.toString('base64')}) format('${getFontFormat(filePath)}')`
-const createCSSFilePath = (filePath) => `${path.join(path.dirname(filePath), getFileNameFromFilePath(filePath))}.css`
-const createCSSFileData = (fileName, list) => (`
-@font-face {
-  font-family: '${fileName}';
-  src: ${list.map(({ filePath, fileData }) => url(filePath, fileData)).join(', ')};
-}
+const transformToUrl = (filePath, fileData) => `url(data:${getFontMimeType(filePath)};base64,${fileData.toString('base64')}) format('${getFontFormat(filePath)}')`
+
+/**
+ *  @returns {String}
+ */
+const createCSSFileDataLine = (filePath, fileData) => (`
+/**
+ *  "${filePath}"
+ */
+${fileData.replace(/^.*\/\*\*.*\n(?: \* +".*"\n)+ \*\/\n/gm, '').replace(/^\n+|\n+$/g, '')}
 `)
 
+/**
+ *  @returns {String}
+ */
+const createCSSFileDataFromCSSFilePathList = (fileDataList) => {
+  const [
+    {
+      filePath
+    }
+  ] = fileDataList
+
+  return `/**
+${fileDataList.map(({ filePath }) => ` *  "${filePath}"`).join('\n')}
+ */
+@font-face {
+  font-family: '${getFileNameFromFilePath(filePath)}';
+  src: ${fileDataList.map(({ filePath, fileData }) => transformToUrl(filePath, fileData)).join(', ')};
+}
+`
+}
+
+/**
+ *  @returns {String}
+ */
+const createCSSFileDataFromCSSFileDataList = (fileDataList) => (
+  fileDataList
+    .reduce((accumulator, { filePath, fileData }) => accumulator.concat(createCSSFileDataLine(filePath, fileData.toString('utf8'))), '')
+)
+
+/**
+ *  @todo Refactor as a reducer!
+ */
 function createCSSFilePathListFromSrcFilePathList (srcFilePathList, srcPath, cssPath) {
-  const cssFilePathList = []
+  const cssFileDataList = []
 
   while (srcFilePathList.length) {
     /*
-     *  Extract the first item from the 'srcFilePathList' collection
+     *  Extract the first item from the `srcFilePathList` collection
      */
     const srcFile = srcFilePathList.shift()
 
@@ -123,174 +218,125 @@ function createCSSFilePathListFromSrcFilePathList (srcFilePathList, srcPath, css
      *  Destructure its properties
      */
     const {
-      filePath: srcFilePath /* ,
-      fileData: srcFileData */
+      filePath: srcFilePath
     } = srcFile
 
     /*
-     *  The 'fileName' is the same, only the extension changes
-     *  '/path/to/arial.ttf' matches '/path/to/arial.otf' as
-     *  '/path/to/arial'
+     *  Only the extension changes, so '/path/to/arial.ttf' matches '/path/to/arial.otf'
+     *  as '/path/to/arial'
      */
-    const fileName = getFileNameFromFilePath(srcFilePath)
-    const filePath = path.join(path.dirname(srcFilePath), fileName)
+    const filePath = getCSSFilePath(srcFilePath)
 
     /*
-     *  We're going to filter the 'srcFilePathList' collection to extract the other
-     *  src files with the same 'fileName' and store them in an array
+     *  Filter the `srcFilePathList` array to extract the other
+     *  files with the same `fileName` and store them in the
+     *  `cssFilePathList` array
      */
-    const list = srcFilePathList
-      .filter(({ filePath: f }) => filePath === path.join(path.dirname(f), getFileNameFromFilePath(f))) /* 'filePath' is the property on the object in the array -- we're destructuring */
+    const cssFilePathList = srcFilePathList
+      .filter(({ filePath: f }) => filePath === getCSSFilePath(f))
 
     /*
-     *  We're going to remove those src files from the 'srcFilePathList' collection
-     *  so that we don't process them again. This will also reduce the length of
-     *  our array, and the number of loops we need to do
+     *  Remove those src files from the `srcFilePathList` array
+     *  so that we don't process them again. (This will also reduce the length of
+     *  the `srcFilePathList` array, and the number of loops we need to do)
      */
-    list.forEach(({ filePath }) => srcFilePathList.splice(srcFilePathList.findIndex(({ filePath: f }) => filePath === f), 1))
+    cssFilePathList.forEach(({ filePath }) => srcFilePathList.splice(srcFilePathList.findIndex(({ filePath: f }) => filePath === f), 1))
 
     /*
-     *  Finally, we're going to put the first item we extracted from the
-     *  'srcFilePathList' collection into the list we've just created
-     *
-     *  We could just as easily put it at the start of the current list with:
-     *
-     *    list.unshift(srcFile)
-     *
-     *  Or else we could put it at the end of the current list with:
-     *
-     *    list.push(srcFile)
-     *
-     *  For some reason I decided to create another array and use '[].concat(list)'
+     *  Ensure the first item from the `srcFilePathList` array is
+     *  the first item of the `cssFilePathList` array we have created
      */
-    const last = [
-      srcFile
-    ].concat(list)
+    cssFilePathList.unshift(srcFile)
 
-    const cssFilePath = createCSSFilePath(mapSrcFilePathToCSSFilePath(srcFilePath, srcPath, cssPath))
-    const cssFileData = createCSSFileData(fileName, last)
+    const cssFilePath = transformSrcFilePathToCSSFilePath(srcFilePath, srcPath, cssPath)
+    const cssFileData = createCSSFileDataFromCSSFilePathList(cssFilePathList)
 
     const cssFile = {
       filePath: cssFilePath,
       fileData: cssFileData
     }
 
-    cssFilePathList.push(cssFile)
+    /*
+     *  Push this object onto the end of the `cssFileDataList` array
+     */
+    cssFileDataList.push(cssFile)
   }
 
-  return cssFilePathList
+  return cssFileDataList
 }
 
-export const makeFace = (SRC_PATH, CSS_PATH) => (
-  Promise.resolve({ SRC_PATH, CSS_PATH })
-    .then(srcStat)
-    .then(cssStat)
-    .then(() => path.join(SRC_PATH, SRC_PATH_PATTERN))
-    .then(getFilePathList)
-    .then(mapFilePathListFromFS)
-    .then((filePathList) => createCSSFilePathListFromSrcFilePathList(filePathList, SRC_PATH, CSS_PATH))
-    .then(mapFilePathListToFS)
-    .catch(({ message }) => {
-      log(message)
-    })
-)
+export async function makeFace (origin, destination) {
+  /*
+   *  log('makeFace')
+   */
 
-export const makeFaceFromCMD = (SILENT, SRC_PATH, CSS_PATH) => (
-  (SILENT)
-    ? makeFace(SRC_PATH, CSS_PATH)
-    : Promise.resolve({ SRC_PATH, CSS_PATH })
-      .then(srcStat)
-      .then(cssStat)
-      .then(() => {
-        log(SRC_PATH)
-        log(CSS_PATH)
-      })
-      .then(() => path.join(SRC_PATH, SRC_PATH_PATTERN))
-      .then(getFilePathList)
-      .then((filePathList) => {
-        log(filePathList)
-        return filePathList
-      })
-      .then(mapFilePathListFromFS)
-      .then((filePathList) => createCSSFilePathListFromSrcFilePathList(filePathList, SRC_PATH, CSS_PATH))
-      .then((filePathList) => {
-        log(filePathList)
-        return filePathList
-      })
-      .then(mapFilePathListToFS)
-      .catch(({ message }) => {
-        log(message)
-      })
-)
+  try {
+    /*
+     *  Does `origin` exist?
+     */
+    await statPath(origin)
 
-export const readFace = (PATH) => (
-  Promise.resolve({ PATH })
-    .then((p) => {
-      const { PATH } = p
-      return stat(PATH)
-        .then(() => p)
-        .catch((e) => {
-          throw new Error(getStatError(e, PATH))
-        })
-    })
-    .then(({ PATH }) => path.join(PATH, '**/*.css'))
-    .then(getFilePathList)
-    .then(mapFilePathListFromFS)
-    .then(transformFilePathList)
-    .catch(({ message }) => {
-      log(message)
-    })
-)
+    /*
+     *  Does `destination` exist?
+     */
+    await statPath(destination)
 
-const transformFilePathList = (filePathList) => filePathList.reduce((accumulator, { filePath, fileData }) => ({ ...accumulator, [filePath]: fileData.toString('utf8') }), {})
+    /*
+     *  Read `origin` file path list then transform and write to `destination`
+     */
+    log(`Reading faces from "${origin}"`)
 
-const createFileLine = (filePath, fileData) => (`
-/**
- * \`${filePath}\`
- */
-${fileData.replace(/^\n+|\n+$/g, '')}
-`)
+    const srcFileDataList = await mapFilePathListFromFS(await getSrcFilePathList(origin))
+    const cssFileDataList = await createCSSFilePathListFromSrcFilePathList(srcFileDataList, origin, destination)
 
-const transformToFile = (data) => (
-  Object.entries(data)
-    .reduce((accumulator, [filePath, fileData]) => accumulator.concat(createFileLine(filePath, fileData)), '')
-)
+    log(`Writing faces to "${destination}"`)
 
-export const readFaceFromCMD = (SILENT, PATH, FILE) => (
-  (SILENT)
-    ? readFace(PATH)
-      .then((data) => (
-        ensureFile(FILE)
-          .then(() => writeFile(FILE, transformToFile(data)))
-          .then(() => data)
-      ))
-    : Promise.resolve({ PATH })
-      .then((p) => {
-        const { PATH } = p
-        return stat(PATH)
-          .then(() => p)
-          .catch((e) => {
-            throw new Error(getStatError(e, PATH))
-          })
-      })
-      .then(({ PATH }) => path.join(PATH, '**/*.css'))
-      .then(getFilePathList)
-      .then((filePathList) => {
-        log(filePathList)
-        return filePathList
-      })
-      .then(mapFilePathListFromFS)
-      .then(transformFilePathList)
-      .then((data) => (
-        ensureFile(FILE)
-          .then(() => writeFile(FILE, transformToFile(data)))
-          .then(() => data)
-      ))
-      .then((data) => {
-        log(FILE)
-        return data
-      })
-      .catch(({ message }) => {
-        log(message)
-      })
-)
+    await mapFileDataListToFS(cssFileDataList)
+
+    log('Done.')
+
+    return (
+      cssFileDataList.map(({ fileData }) => fileData)
+    )
+  } catch ({ message }) {
+    log(message)
+  }
+}
+
+export async function readFace (origin, destination) {
+  /*
+   *  log('readFace')
+   */
+
+  try {
+    /*
+     *  Does `origin` exist?
+     */
+    await statPath(origin)
+
+    /*
+     *  Read files at `origin` to file path list collection
+     */
+
+    log(`Reading faces from "${origin}"`)
+
+    const cssFileDataList = await mapFilePathListFromFS(await createSrcFilePathList(origin))
+    const cssFileData = createCSSFileDataFromCSSFileDataList(cssFileDataList)
+
+    /*
+     *  Transform and write to `destination`
+     */
+
+    log(`Writing faces to "${destination}"`)
+
+    await writeFileToFS(destination, cssFileData)
+
+    log('Done.')
+
+    return (
+      cssFileData
+    )
+  } catch ({ message }) {
+    log(message)
+  }
+}
