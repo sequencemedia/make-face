@@ -210,19 +210,21 @@ const transformToFontFamily = (filePath) => path.basename(filePath, path.extname
 const transformToUrl = (filePath, fileData) => `url(data:${getFontMimeType(filePath)};base64,${fileData.toString('base64')}) format('${getFontFormat(filePath)}')`
 
 /**
- *  @returns {String}
+ *  @returns {Array}
  */
-const createCSSFileDataLine = (filePath, fileData) => (`
-/**
- *  "${filePath}"
- */
-${fileData.replace(/^.*\/\*\*.*\n(?: \* +".*"\n)+ \*\/\n/gm, '').replace(/^\n+|\n+$/g, '')}
-`)
+const transformToSrc = (filePathList) => filePathList.map(({ filePath, fileData }) => transformToUrl(filePath, fileData)).join(', ')
 
 /**
  *  @returns {String}
  */
-const createCSSFileDataFromCSSFilePathList = (filePathList) => {
+const transformCSSFileDataListLine = (filePath, fileData) => (`
+/**
+ *  "${filePath}"
+ */
+${fileData.toString('utf8').replace(/^.*\/\*\*.*\n(?: \* +".*"\n)+ \*\/\n/gm, '').replace(/^\n+|\n+$/g, '')}
+`)
+
+const transformCSSFilePathList = (filePathList) => {
   const [
     {
       filePath
@@ -234,23 +236,42 @@ ${filePathList.map(({ filePath }) => ` *  "${filePath}"`).join('\n')}
  */
 @font-face {
   font-family: '${transformToFontFamily(filePath)}';
-  src: ${filePathList.map(({ filePath, fileData }) => transformToUrl(filePath, fileData)).join(', ')};
+  src: ${transformToSrc(filePathList)};
 }
 `
 }
 
-/**
- *  @returns {String}
- */
-const createCSSFileDataFromCSSFileDataList = (fileDataList) => (
+const transformCSSFileDataList = (fileDataList) => (
   fileDataList
-    .reduce((accumulator, { filePath, fileData }) => accumulator.concat(createCSSFileDataLine(filePath, fileData.toString('utf8'))), '')
+    .reduce((accumulator, { filePath, fileData }) => accumulator.concat(transformCSSFileDataListLine(filePath, fileData)), '')
 )
+
+/**
+ *  @returns {Buffer}
+ */
+const createCSSFileDataFromCSSFilePathList = (filePathList) => Buffer.from(transformCSSFilePathList(filePathList))
+
+/**
+ *  @returns {Buffer}
+ */
+const createCSSFileDataFromCSSFileDataList = (fileDataList) => Buffer.from(transformCSSFileDataList(fileDataList))
+
+/**
+ *  @returns {Object}
+ */
+const transformToCSSFileDataFromCSSFileDataList = (fileDataList, cssFilePath) => {
+  const cssFileData = createCSSFileDataFromCSSFileDataList(fileDataList)
+
+  return {
+    filePath: cssFilePath,
+    fileData: cssFileData
+  }
+}
 
 /**
  *  @returns {Array}
  */
-function createCSSFilePathListFromSrcFilePathList (srcFilePathList, srcPath, cssPath) {
+function transformToCSSFileDataListFromSrcFilePathList (srcFilePathList, srcPath, cssPath) {
   return (
     srcFilePathList.reduce((accumulator, { filePath: srcFilePath }) => { // , index, array) => {
       /*
@@ -309,7 +330,7 @@ export async function makeFace (origin, destination) {
     log(`Reading faces from "${origin}"`)
 
     const srcFileDataList = await readFileDataListFromFS(await getSrcFilePathList(origin))
-    const cssFileDataList = await createCSSFilePathListFromSrcFilePathList(srcFileDataList, origin, destination)
+    const cssFileDataList = await transformToCSSFileDataListFromSrcFilePathList(srcFileDataList, origin, destination)
 
     /*
      *  Transform and write to `destination`
@@ -321,7 +342,7 @@ export async function makeFace (origin, destination) {
     log('Done.')
 
     return (
-      cssFileDataList.map(({ fileData }) => fileData)
+      cssFileDataList
     )
   } catch ({ message }) {
     log(message)
@@ -346,14 +367,14 @@ export async function readFace (origin, destination) {
     log(`Reading faces from "${origin}"`)
 
     const cssFileDataList = await readFileDataListFromFS(await getCSSFilePathList(origin))
-    const cssFileData = createCSSFileDataFromCSSFileDataList(cssFileDataList)
+    const cssFileData = transformToCSSFileDataFromCSSFileDataList(cssFileDataList, destination)
 
     /*
      *  Transform and write to `destination`
      */
     log(`Writing faces to "${destination}"`)
 
-    await writeFileToFS(destination, cssFileData)
+    await writeFileDataToFS(cssFileData)
 
     log('Done.')
 
