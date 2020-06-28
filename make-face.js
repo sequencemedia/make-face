@@ -20,4 +20,9 @@ commander
   .option('-t, --to-directory <directory path>', 'The directory in which to write the CSS files')
   .parse(argv)
 
-makeFace(commander.fromDirectory, commander.toDirectory)
+const {
+  fromDirectory,
+  toDirectory
+} = commander
+
+makeFace(fromDirectory, toDirectory)

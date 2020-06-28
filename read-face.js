@@ -20,8 +20,9 @@ commander
   .option('-t, --to-file <file path>', 'The CSS file in which to write the concatenated CSS files')
   .parse(argv)
 
-/*
- *  TODO:
- *  maxBuffer!
- */
-readFace(commander.fromDirectory, commander.toFile)
+const {
+  fromDirectory,
+  toFile
+} = commander
+
+readFace(fromDirectory, toFile)
