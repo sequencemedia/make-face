@@ -32,8 +32,8 @@ const getStatError = (e, p) => (
   (e.code === 'ENOENT')
     ? `Path "${p}" does not exist.`
     : (p)
-      ? `An error occurred on path "${p}": ${e.message}`
-      : 'Path is not defined.'
+        ? `An error occurred on path "${p}": ${e.message}`
+        : 'Path is not defined.'
 )
 
 /**
