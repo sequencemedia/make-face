@@ -44,7 +44,7 @@
     "pre-commit": "npm run lint && npm run build && git add lib"
   },
   "dependencies": {
-    "commander": "^6.1.0",
+    "commander": "^6.2.0",
     "debug": "^4.2.0",
     "fs-extra": "^9.0.1",
     "glob-all": "^3.2.1",
