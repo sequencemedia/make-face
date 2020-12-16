@@ -48,14 +48,14 @@
     "debug": "^4.3.1",
     "fs-extra": "^9.0.1",
     "glob-all": "^3.2.1",
-    "mime": "^2.4.6",
+    "mime": "^2.4.7",
     "sacred-fs": "^1.2.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.12.10",
     "@babel/core": "^7.12.10",
     "@babel/eslint-parser": "^7.12.1",
-    "@babel/preset-env": "^7.12.10",
+    "@babel/preset-env": "^7.12.11",
     "@babel/register": "^7.12.10",
     "eslint": "^7.15.0",
     "eslint-config-standard": "^16.0.2",
