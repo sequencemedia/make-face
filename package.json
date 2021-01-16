@@ -44,11 +44,11 @@
     "pre-commit": "npm run lint && npm run build && git add lib"
   },
   "dependencies": {
-    "commander": "^6.2.1",
+    "commander": "^7.0.0",
     "debug": "^4.3.1",
     "fs-extra": "^9.0.1",
     "glob-all": "^3.2.1",
-    "mime": "^2.4.7",
+    "mime": "^2.5.0",
     "sacred-fs": "^1.2.1"
   },
   "devDependencies": {
@@ -57,12 +57,12 @@
     "@babel/eslint-parser": "^7.12.1",
     "@babel/preset-env": "^7.12.11",
     "@babel/register": "^7.12.10",
-    "eslint": "^7.17.0",
+    "eslint": "^7.18.0",
     "eslint-config-standard": "^16.0.2",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.2.1",
-    "husky": "^4.3.7",
+    "husky": "^4.3.8",
     "rimraf": "^3.0.2"
   },
   "husky": {
