@@ -23,6 +23,6 @@ commander
 const {
   fromDirectory,
   toFile
-} = commander
+} = commander.opts()
 
 readFace(fromDirectory, toFile)

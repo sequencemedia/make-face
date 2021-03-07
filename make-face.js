@@ -23,6 +23,6 @@ commander
 const {
   fromDirectory,
   toDirectory
-} = commander
+} = commander.opts()
 
 makeFace(fromDirectory, toDirectory)
