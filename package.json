@@ -46,7 +46,7 @@
   "dependencies": {
     "commander": "^7.2.0",
     "debug": "^4.3.1",
-    "fs-extra": "^9.1.0",
+    "fs-extra": "^10.0.0",
     "glob-all": "^3.2.1",
     "mime": "^2.5.2",
     "sacred-fs": "^1.2.1"
@@ -55,7 +55,7 @@
     "@babel/cli": "^7.13.16",
     "@babel/core": "^7.14.0",
     "@babel/eslint-parser": "^7.13.14",
-    "@babel/preset-env": "^7.14.0",
+    "@babel/preset-env": "^7.14.1",
     "@babel/register": "^7.13.16",
     "eslint": "^7.25.0",
     "husky": "^6.0.0",
