@@ -42,3 +42,9 @@ coverage/
 npm-debug.log*
 
 fonts
+
+# User-defined NPM configuration
+.npmrc
+
+# User-defined NVM configuration
+.nvmrc
