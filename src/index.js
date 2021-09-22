@@ -7,7 +7,7 @@ import {
   stat,
   writeFile,
   readFile
-} from 'sacred-fs'
+} from 'fs/promises'
 
 import CONSTANTS from './constants'
 
