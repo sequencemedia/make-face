@@ -9,11 +9,11 @@ import {
   readFile
 } from 'fs/promises'
 
-import CONSTANTS from './constants'
+import FORMATS from './constants'
 
 const log = debug('@sequencemedia/make-face')
 
-const SRC_GLOB = `**/?(${CONSTANTS.formats.sort().map((format) => `*.${format}`).join('|')})`
+const SRC_GLOB = `**/?(${FORMATS.sort().map((format) => '*.'.concat(format)).join('|')})`
 const CSS_GLOB = '**/*.css'
 
 /*

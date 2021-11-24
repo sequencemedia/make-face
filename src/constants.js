@@ -1,4 +1,4 @@
-const formats = [
+const FORMATS = [
   'otf',
   'ttf',
   'eot',
@@ -7,6 +7,4 @@ const formats = [
   'woff2'
 ]
 
-export default {
-  formats
-}
+export default FORMATS
