@@ -1,6 +1,6 @@
 {
   "name": "@sequencemedia/make-face",
-  "version": "1.1.137",
+  "version": "1.1.138",
   "description": "Convert font files into CSS @font-face declarations with embedded Base64 data",
   "keywords": [
     "css",
@@ -48,7 +48,7 @@
     "commander": "^9.0.0",
     "debug": "^4.3.3",
     "fs-extra": "^10.0.1",
-    "glob-all": "^3.2.1",
+    "glob-all": "^3.3.0",
     "mime": "^3.0.0"
   },
   "devDependencies": {
