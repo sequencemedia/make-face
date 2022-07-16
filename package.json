@@ -45,7 +45,7 @@
     "pre-commit": "npm run lint && npm run build && git add lib && npm run gulp -- pre-commit"
   },
   "dependencies": {
-    "commander": "^9.3.0",
+    "commander": "^9.4.0",
     "debug": "^4.3.4",
     "fs-extra": "^10.1.0",
     "glob-all": "^3.3.0",
