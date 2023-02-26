@@ -51,8 +51,14 @@ makeFace(fromDirectory, toDirectory);
 
 ```javascript
 var debug = require('debug');
+var makeFace = require('make-face').makeFace;
 
 debug.enable('@sequencemedia/make-face');
+
+var fromDirectory = '~/origin/file/path';
+var toDirectory = '~/css/file/path';
+
+makeFace(fromDirectory, toDirectory);
 ```
 
 ### Import using ES
@@ -70,8 +76,15 @@ makeFace(fromDirectory, toDirectory)
 
 ```javascript
 import debug from 'debug'
+import { makeFace } from 'make-face'
 
 debug.enable('@sequencemedia/make-face')
+
+const fromDirectory = '~/origin/file/path'
+const toDirectory = '~/destination/file/path'
+
+makeFace(fromDirectory, toDirectory)
+
 ```
 
 ## Read Face
@@ -93,8 +106,14 @@ readFace(fromDirectory, toFile);
 
 ```javascript
 var debug = require('debug');
+var readFace = require('make-face').readFace;
 
 debug.enable('@sequencemedia/make-face');
+
+var fromDirectory = '~/origin/file/path';
+var toFile = '~/destination/file/path/file.css';
+
+readFace(fromDirectory, toFile);
 ```
 
 ### Using ES
@@ -112,6 +131,12 @@ readFace(fromDirectory, toFile)
 
 ```javascript
 import debug from 'debug'
+import { readFace } from 'make-face'
 
 debug.enable('@sequencemedia/make-face')
+
+const fromDirectory = '~/src/file/path'
+const toFile = '~/destination/file/path/file.css'
+
+readFace(fromDirectory, toFile)
 ```
