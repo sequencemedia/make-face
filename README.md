@@ -22,7 +22,7 @@ node make-face -f ~/from/file/path -t ~/to/file/path
 node read-face -f ~/from/file/path -t ~/to/file/path/file.css
 ```
 
-## Run from the command line (with `debug`)
+### Run from the command line with `debug`
 
 ```bash
 DEBUG=@sequencemedia/make-face node make-face -f ~/from/file/path -t ~/to/file/path
@@ -47,7 +47,7 @@ var toDirectory = '~/css/file/path';
 makeFace(fromDirectory, toDirectory);
 ```
 
-#### `debug`
+#### With `debug`
 
 ```javascript
 var debug = require('debug');
@@ -66,7 +66,7 @@ const toDirectory = '~/destination/file/path'
 makeFace(fromDirectory, toDirectory)
 ```
 
-#### `debug`
+#### With `debug`
 
 ```javascript
 import debug from 'debug'
@@ -89,7 +89,7 @@ var toFile = '~/destination/file/path/file.css';
 readFace(fromDirectory, toFile);
 ```
 
-#### `debug`
+#### With `debug`
 
 ```javascript
 var debug = require('debug');
@@ -108,7 +108,7 @@ const toFile = '~/destination/file/path/file.css'
 readFace(fromDirectory, toFile)
 ```
 
-#### `debug`
+#### With `debug`
 
 ```javascript
 import debug from 'debug'
