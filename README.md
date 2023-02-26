@@ -10,9 +10,19 @@ npm i @sequencemedia/make-face
 
 ## Logging
 
-Logging is implemented with [`debug`](https://www.npmjs.com/package/debug) and can be enabled with the `@sequencemedia/make-face` namespace. This package will execute _silently_ without that namespace enabled. (The command line and JS/ES import examples show how logging can be enabled)
+Logging is implemented with [`debug`](https://www.npmjs.com/package/debug) and can be enabled with the `@sequencemedia/make-face` namespace. This package will execute _silently_ without that namespace enabled
 
 ## Run from the command line
+
+```bash
+node make-face -f ~/from/file/path -t ~/to/file/path
+```
+
+```bash
+node read-face -f ~/from/file/path -t ~/to/file/path/file.css
+```
+
+## Run from the command line (with `debug`)
 
 ```bash
 DEBUG=@sequencemedia/make-face node make-face -f ~/from/file/path -t ~/to/file/path
@@ -29,10 +39,7 @@ Read font files from the file system and transform them to `css` files.
 ### Import using JS
 
 ```javascript
-var debug = require('debug');
 var makeFace = require('make-face').makeFace;
-
-debug.enable('@sequencemedia/make-face');
 
 var fromDirectory = '~/origin/file/path';
 var toDirectory = '~/css/file/path';
@@ -40,18 +47,31 @@ var toDirectory = '~/css/file/path';
 makeFace(fromDirectory, toDirectory);
 ```
 
+#### `debug`
+
+```javascript
+var debug = require('debug');
+
+debug.enable('@sequencemedia/make-face');
+```
+
 ### Import using ES
 
 ```javascript
-import debug from 'debug'
 import { makeFace } from 'make-face'
-
-debug.enable('@sequencemedia/make-face')
 
 const fromDirectory = '~/origin/file/path'
 const toDirectory = '~/destination/file/path'
 
 makeFace(fromDirectory, toDirectory)
+```
+
+#### `debug`
+
+```javascript
+import debug from 'debug'
+
+debug.enable('@sequencemedia/make-face')
 ```
 
 ## Read Face
@@ -61,10 +81,7 @@ Read `css` files from the file system and concatenate them to another `css` file
 ### Using JS
 
 ```javascript
-var debug = require('debug');
 var readFace = require('make-face').readFace;
-
-debug.enable('@sequencemedia/make-face');
 
 var fromDirectory = '~/origin/file/path';
 var toFile = '~/destination/file/path/file.css';
@@ -72,16 +89,29 @@ var toFile = '~/destination/file/path/file.css';
 readFace(fromDirectory, toFile);
 ```
 
+#### `debug`
+
+```javascript
+var debug = require('debug');
+
+debug.enable('@sequencemedia/make-face');
+```
+
 ### Using ES
 
 ```javascript
-import debug from 'debug'
 import { readFace } from 'make-face'
-
-debug.enable('@sequencemedia/make-face')
 
 const fromDirectory = '~/src/file/path'
 const toFile = '~/destination/file/path/file.css'
 
 readFace(fromDirectory, toFile)
+```
+
+#### `debug`
+
+```javascript
+import debug from 'debug'
+
+debug.enable('@sequencemedia/make-face')
 ```
