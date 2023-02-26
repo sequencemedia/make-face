@@ -5,7 +5,9 @@
  */
 
 import debug from 'debug'
-import fs from 'fs-extra'
+import {
+  ensureFile
+} from 'fs-extra'
 import path from 'path'
 import mime from 'mime'
 import glob from 'glob-all'
@@ -21,18 +23,6 @@ const log = debug('@sequencemedia/make-face')
 
 const SRC_GLOB = `**/?(${FORMATS.sort().map((format) => '*.'.concat(format)).join('|')})`
 const CSS_GLOB = '**/*.css'
-
-/**
- *  Ensure a file path exists on the file system
- *
- *  @param {string} filePath
- *  @returns {Promise}
- */
-const ensureFile = (filePath) => (
-  new Promise((resolve, reject) => {
-    fs.ensureFile(filePath, (e) => (!e) ? resolve() : reject(e))
-  })
-)
 
 /**
  *  @param {Error} e - Error
