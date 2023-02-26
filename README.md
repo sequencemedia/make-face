@@ -22,7 +22,7 @@ node make-face -f ~/from/file/path -t ~/to/file/path
 node read-face -f ~/from/file/path -t ~/to/file/path/file.css
 ```
 
-### Run from the command line with `debug`
+### With `debug`
 
 ```bash
 DEBUG=@sequencemedia/make-face node make-face -f ~/from/file/path -t ~/to/file/path
