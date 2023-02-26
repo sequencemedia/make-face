@@ -29,7 +29,10 @@ Read font files from the file system and transform them to `css` files.
 ### Import using JS
 
 ```javascript
+var debug = require('debug');
 var makeFace = require('make-face').makeFace;
+
+debug.enable('@sequencemedia/make-face');
 
 var fromDirectory = '~/origin/file/path';
 var toDirectory = '~/css/file/path';
@@ -40,7 +43,10 @@ makeFace(fromDirectory, toDirectory);
 ### Import using ES
 
 ```javascript
+import debug from 'debug'
 import { makeFace } from 'make-face'
+
+debug.enable('@sequencemedia/make-face')
 
 const fromDirectory = '~/origin/file/path'
 const toDirectory = '~/destination/file/path'
