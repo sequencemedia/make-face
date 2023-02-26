@@ -441,7 +441,9 @@ export async function makeFace (origin, destination) {
     return (
       cssFileDataList
     )
-  } catch ({ message }) {
+  } catch ({
+    message
+  }) {
     log(message)
   }
 }
@@ -478,7 +480,9 @@ export async function readFace (origin, destination) {
     return (
       cssFileData
     )
-  } catch ({ message }) {
+  } catch ({
+    message
+  }) {
     log(message)
   }
 }
