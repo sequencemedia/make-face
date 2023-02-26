@@ -1,3 +1,9 @@
+/**
+ * @typedef {Object} FileDescriptor
+ * @property {string} filePath
+ * @property {Buffer} fileData
+ */
+
 import debug from 'debug'
 import fs from 'fs-extra'
 import path from 'path'
@@ -16,8 +22,11 @@ const log = debug('@sequencemedia/make-face')
 const SRC_GLOB = `**/?(${FORMATS.sort().map((format) => '*.'.concat(format)).join('|')})`
 const CSS_GLOB = '**/*.css'
 
-/*
+/**
  *  Ensure a file path exists on the file system
+ *
+ *  @param {string} filePath
+ *  @returns {Promise}
  */
 const ensureFile = (filePath) => (
   new Promise((resolve, reject) => {
@@ -26,7 +35,9 @@ const ensureFile = (filePath) => (
 )
 
 /**
- *  @returns {String}
+ *  @param {Error} e - Error
+ *  @param {string|undefined} p - Path
+ *  @returns {string}
  */
 const getStatError = (e, p) => (
   (e.code === 'ENOENT')
@@ -37,6 +48,7 @@ const getStatError = (e, p) => (
 )
 
 /**
+ *  @param {string} filePath
  *  @returns {Promise<Buffer>}
  */
 async function readFileFromFS (filePath) {
@@ -51,6 +63,8 @@ async function readFileFromFS (filePath) {
 }
 
 /**
+ *  @param {string} filePath
+ *  @param {Buffer} fileData
  *  @returns {Promise}
  */
 async function writeFileToFS (filePath, fileData) {
@@ -65,7 +79,8 @@ async function writeFileToFS (filePath, fileData) {
 }
 
 /**
- *  @returns {Promise}
+ *  @param {FileDescriptor}
+ *  @returns {Promise<undefined>}
  */
 function writeFileDataToFS ({ filePath, fileData }) {
   /*
@@ -77,7 +92,8 @@ function writeFileDataToFS ({ filePath, fileData }) {
 }
 
 /**
- *  @returns {Promise<Array>}
+ *  @param {FileDescriptor[]} fileDataList
+ *  @returns {Promise<undefined[]>}
  */
 function writeFileDataListToFS (fileDataList) {
   /*
@@ -89,7 +105,8 @@ function writeFileDataListToFS (fileDataList) {
 }
 
 /**
- *  @returns {Promise<Object>}
+ *  @param {string} filePath
+ *  @returns {Promise<FileDescriptor>}
  */
 async function readFileDataFromFS (filePath) {
   /*
@@ -104,7 +121,8 @@ async function readFileDataFromFS (filePath) {
 }
 
 /**
- *  @returns {Promise<Array>}
+ *  @param {string[]} filePathList
+ *  @returns {Promise<FileDescriptor[]>}
  */
 function readFileDataListFromFS (filePathList) {
   /*
@@ -116,7 +134,8 @@ function readFileDataListFromFS (filePathList) {
 }
 
 /**
- *  @returns {Promise}
+ *  @param {string} directory
+ *  @returns {Promise<undefined>}
  */
 async function statPath (directory) {
   /*
@@ -130,17 +149,20 @@ async function statPath (directory) {
 }
 
 /**
- *  @returns {String}
+ *  @param {string} directory
+ *  @returns {string}
  */
 const getSrcFileGlob = (directory) => path.join(directory, SRC_GLOB)
 
 /**
- *  @returns {String}
+ *  @param {string} directory
+ *  @returns {string}
  */
 const getCSSFileGlob = (directory) => path.join(directory, CSS_GLOB)
 
 /**
- *  @returns {Promise<Array>}
+ *  @param {string} filePath
+ *  @returns {Promise<string[]>}
  */
 function getFilePathList (filePath) {
   /*
@@ -152,7 +174,8 @@ function getFilePathList (filePath) {
 }
 
 /**
- *  @returns {Array}
+ *  @param {string} directory
+ *  @returns {Promise<string[]>}
  */
 function getSrcFilePathList (directory) {
   /*
@@ -164,7 +187,8 @@ function getSrcFilePathList (directory) {
 }
 
 /**
- *  @returns {Array}
+ *  @param {string} directory
+ *  @returns {Promise<string[]>}
  */
 function getCSSFilePathList (directory) {
   /*
@@ -176,7 +200,10 @@ function getCSSFilePathList (directory) {
 }
 
 /**
- *  @returns {Boolean}
+ *  @param {string} cssFilePath
+ *  @param {string} srcPath
+ *  @param {string} cssPath
+ *  @returns {Function}
  */
 function findCSSFilePathFactory (cssFilePath, srcPath, cssPath) {
   /*
@@ -191,12 +218,14 @@ function findCSSFilePathFactory (cssFilePath, srcPath, cssPath) {
 }
 
 /**
- *  @returns {String}
+ *  @param {string} filePath
+ *  @returns {string}
  */
 const getFontMimeType = (filePath) => mime.getType(filePath)
 
 /**
- *  @returns {String}
+ *  @param {string} filePath
+ *  @returns {string}
  */
 function getFontFormat (filePath) {
   /*
@@ -217,7 +246,10 @@ function getFontFormat (filePath) {
 }
 
 /**
- *  @returns {String}
+ *  @param {string} filePath
+ *  @param {string} srcPath
+ *  @param {string} cssPath
+ *  @returns {string}
  */
 function getCSSFilePathFromSrcFilePath (filePath, srcPath, cssPath) {
   /*
@@ -233,22 +265,28 @@ function getCSSFilePathFromSrcFilePath (filePath, srcPath, cssPath) {
 }
 
 /**
- *  @returns {String}
+ *  @param {string} filePath
+ *  @returns {string}
  */
 const transformToFontFamily = (filePath) => path.basename(filePath, path.extname(filePath))
 
 /**
- *  @returns {String}
+ *  @param {string} filePath
+ *  @param {Buffer} fileData
+ *  @returns {string}
  */
 const transformToUrl = (filePath, fileData) => `url(data:${getFontMimeType(filePath)};base64,${fileData.toString('base64')}) format('${getFontFormat(filePath)}')`
 
 /**
- *  @returns {Array}
+ *  @param {FileDescriptor[]} filePathList
+ *  @returns {string}
  */
 const transformToSrc = (filePathList) => filePathList.map(({ filePath, fileData }) => transformToUrl(filePath, fileData)).join(', ')
 
 /**
- *  @returns {String}
+ *  @param {string} filePath
+ *  @param {Buffer} fileData
+ *  @returns {string}
  */
 const transformCSSFileDataListLine = (filePath, fileData) => {
   /*
@@ -262,6 +300,10 @@ ${fileData.toString('utf8').replace(/^.*\/\*\*.*\n(?: \* +".*"\n)+ \*\/\n/gm, ''
 `
 }
 
+/**
+ *  @param {FileDescriptor[]} filePathList
+ *  @returns {string}
+ */
 const transformCSSFilePathList = (filePathList) => {
   /*
    *  log('transformCSSFilePathList')
@@ -282,6 +324,10 @@ ${filePathList.map(({ filePath }) => ` *  "${filePath}"`).join('\n')}
 `
 }
 
+/**
+ *  @param {FileDescriptor[]} fileDataList
+ *  @returns {string}
+ */
 const transformCSSFileDataList = (fileDataList) => {
   /*
    *  log('transformCSSFileDataList')
@@ -293,17 +339,21 @@ const transformCSSFileDataList = (fileDataList) => {
 }
 
 /**
+ *  @param {FileDescriptor[]} filePathList
  *  @returns {Buffer}
  */
 const createCSSFileDataFromCSSFilePathList = (filePathList) => Buffer.from(transformCSSFilePathList(filePathList))
 
 /**
+ *  @param {FileDescriptor[]} fileDataList
  *  @returns {Buffer}
  */
 const createCSSFileDataFromCSSFileDataList = (fileDataList) => Buffer.from(transformCSSFileDataList(fileDataList))
 
 /**
- *  @returns {Object}
+ *  @param {FileDescriptor[]} cssFileDataList
+ *  @param {string} cssFilePath
+ *  @returns {FileDescriptor}
  */
 function transformToCSSFileDataFromCSSFileDataList (cssFileDataList, cssFilePath) {
   /*
@@ -318,7 +368,10 @@ function transformToCSSFileDataFromCSSFileDataList (cssFileDataList, cssFilePath
 }
 
 /**
- *  @returns {Array}
+ *  @param {FileDescriptor[]} srcFilePathList
+ *  @param {string} srcPath
+ *  @param {string} cssPath
+ *  @returns {FileDescriptor[]}
  */
 function transformToCSSFileDataListFromSrcFilePathList (srcFilePathList, srcPath, cssPath) {
   /*
@@ -360,7 +413,9 @@ function transformToCSSFileDataListFromSrcFilePathList (srcFilePathList, srcPath
 }
 
 /**
- *  @returns {Promise<Array>}
+ *  @param {string} origin
+ *  @param {string} destination
+ *  @returns {Promise<FileDescriptor[]>}
  */
 export async function makeFace (origin, destination) {
   log('Starting ...')
@@ -382,7 +437,7 @@ export async function makeFace (origin, destination) {
     log(`Reading faces from "${origin}"`)
 
     const srcFileDataList = await readFileDataListFromFS(await getSrcFilePathList(origin))
-    const cssFileDataList = await transformToCSSFileDataListFromSrcFilePathList(srcFileDataList, origin, destination)
+    const cssFileDataList = transformToCSSFileDataListFromSrcFilePathList(srcFileDataList, origin, destination)
 
     /*
      *  Transform and write to `destination`
@@ -402,7 +457,7 @@ export async function makeFace (origin, destination) {
 }
 
 /**
- *  @returns {Promise<String>}
+ *  @returns {Promise<FileDescriptor>}
  */
 export async function readFace (origin, destination) {
   log('Starting ...')
