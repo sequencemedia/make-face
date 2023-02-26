@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 
-const commander = require('commander')
+const {
+  Command
+} = require('commander')
 
 const {
   version
@@ -10,14 +12,16 @@ const {
   makeFace
 } = require('./lib')
 
+const commander = new Command()
+
 const {
   argv
 } = process
 
 commander
   .version(version)
-  .option('-f, --from-directory <directory path>', 'The directory from which to read the font files')
-  .option('-t, --to-directory <directory path>', 'The directory in which to write the CSS files')
+  .requiredOption('-f, --from-directory <directory path>', 'The directory from which to read the font files')
+  .requiredOption('-t, --to-directory <directory path>', 'The directory in which to write the CSS files')
   .parse(argv)
 
 const {
