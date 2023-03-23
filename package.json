@@ -1,6 +1,6 @@
 {
   "name": "@sequencemedia/make-face",
-  "version": "1.1.380",
+  "version": "1.1.381",
   "description": "Convert font files into CSS @font-face declarations with embedded Base64 data",
   "keywords": [
     "css",
@@ -65,6 +65,6 @@
     "eslint-plugin-promise": "^6.1.1",
     "gulp": "^4.0.2",
     "husky": "^8.0.3",
-    "rimraf": "^4.4.0"
+    "rimraf": "^4.4.1"
   }
 }
