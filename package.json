@@ -1,6 +1,6 @@
 {
   "name": "@sequencemedia/make-face",
-  "version": "1.1.399",
+  "version": "1.1.400",
   "description": "Convert font files into CSS @font-face declarations with embedded Base64 data",
   "keywords": [
     "css",
@@ -46,7 +46,7 @@
     "prepare": "husky install"
   },
   "dependencies": {
-    "commander": "^10.0.0",
+    "commander": "^10.0.1",
     "debug": "^4.3.4",
     "fs-extra": "^11.1.1",
     "glob-all": "^3.3.1",
