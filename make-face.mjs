@@ -1,16 +1,20 @@
 #!/usr/bin/env node
 
-const {
+import {
+  readFileSync
+} from 'node:fs'
+
+import {
   Command
-} = require('commander')
+} from 'commander'
+
+import {
+  makeFace
+} from './src/index.mjs'
 
 const {
   version
-} = require('./package')
-
-const {
-  makeFace
-} = require('./lib')
+} = JSON.parse(readFileSync('./package.json'))
 
 const commander = new Command()
 

@@ -36,33 +36,6 @@ DEBUG=@sequencemedia/make-face node read-face -f ~/from/file/path -t ~/to/file/p
 
 Read font files from the file system and transform them to `css` files.
 
-### Import using JS
-
-```javascript
-var makeFace = require('make-face').makeFace;
-
-var fromDirectory = '~/origin/file/path';
-var toDirectory = '~/css/file/path';
-
-makeFace(fromDirectory, toDirectory);
-```
-
-#### With `debug`
-
-```javascript
-var debug = require('debug');
-var makeFace = require('make-face').makeFace;
-
-debug.enable('@sequencemedia/make-face');
-
-var fromDirectory = '~/origin/file/path';
-var toDirectory = '~/css/file/path';
-
-makeFace(fromDirectory, toDirectory);
-```
-
-### Import using ES
-
 ```javascript
 import { makeFace } from 'make-face'
 
@@ -72,7 +45,7 @@ const toDirectory = '~/destination/file/path'
 makeFace(fromDirectory, toDirectory)
 ```
 
-#### With `debug`
+### With `debug`
 
 ```javascript
 import debug from 'debug'
@@ -91,33 +64,6 @@ makeFace(fromDirectory, toDirectory)
 
 Read `css` files from the file system and concatenate them to another `css` file.
 
-### Using JS
-
-```javascript
-var readFace = require('make-face').readFace;
-
-var fromDirectory = '~/origin/file/path';
-var toFile = '~/destination/file/path/file.css';
-
-readFace(fromDirectory, toFile);
-```
-
-#### With `debug`
-
-```javascript
-var debug = require('debug');
-var readFace = require('make-face').readFace;
-
-debug.enable('@sequencemedia/make-face');
-
-var fromDirectory = '~/origin/file/path';
-var toFile = '~/destination/file/path/file.css';
-
-readFace(fromDirectory, toFile);
-```
-
-### Using ES
-
 ```javascript
 import { readFace } from 'make-face'
 
@@ -127,7 +73,7 @@ const toFile = '~/destination/file/path/file.css'
 readFace(fromDirectory, toFile)
 ```
 
-#### With `debug`
+### With `debug`
 
 ```javascript
 import debug from 'debug'

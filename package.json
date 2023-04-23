@@ -17,7 +17,7 @@
     "woff",
     "woff2"
   ],
-  "main": "./index.js",
+  "main": "./index.mjs",
   "author": {
     "name": "Jonathan Perry for Sequence Media Limited",
     "email": "sequencemedia@sequencemedia.net",
@@ -39,10 +39,8 @@
     "clean": "rimraf lib",
     "prepublishOnly": "npm run build",
     "prebuild": "npm run clean",
-    "lint": "eslint .",
+    "lint": "eslint . --ext .cjs --ext .mjs",
     "lint:fix": "npm run lint -- --fix",
-    "gulp": "gulp --color",
-    "pre-commit": "npm run lint && npm run build && git add lib && npm run gulp -- pre-commit",
     "prepare": "husky install"
   },
   "dependencies": {
@@ -58,12 +56,12 @@
     "@babel/eslint-parser": "^7.21.3",
     "@babel/preset-env": "^7.21.4",
     "@babel/register": "^7.21.0",
+    "@sequencemedia/hooks": "^1.0.394",
     "eslint": "^8.39.0",
     "eslint-config-standard": "^17.0.0",
     "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^6.1.1",
-    "gulp": "^4.0.2",
     "husky": "^8.0.3",
     "rimraf": "^5.0.0"
   }

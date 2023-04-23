@@ -8,16 +8,16 @@ import debug from 'debug'
 import {
   ensureFile
 } from 'fs-extra'
-import path from 'path'
+import path from 'node:path'
 import mime from 'mime'
 import glob from 'glob-all'
 import {
   stat,
   writeFile,
   readFile
-} from 'fs/promises'
+} from 'node:fs/promises'
 
-import FORMATS from './constants'
+import FORMATS from './constants.mjs'
 
 const log = debug('@sequencemedia/make-face')
 
@@ -55,7 +55,7 @@ async function readFileFromFS (filePath) {
 /**
  *  @param {string} filePath
  *  @param {Buffer} fileData
- *  @returns {Promise}
+ *  @returns {Promise<undefined>}
  */
 async function writeFileToFS (filePath, fileData) {
   /*
@@ -304,7 +304,8 @@ const transformCSSFilePathList = (filePathList) => {
     }
   ] = filePathList
 
-  return `/**
+  return `
+/**
 ${filePathList.map(({ filePath }) => ` *  "${filePath}"`).join('\n')}
  */
 @font-face {
