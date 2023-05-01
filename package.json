@@ -39,7 +39,7 @@
     "clean": "rimraf lib",
     "prepublishOnly": "npm run build",
     "prebuild": "npm run clean",
-    "lint": "eslint . --ext .cjs --ext .mjs",
+    "lint": "eslint . --ext .mjs --ext .cjs",
     "lint:fix": "npm run lint -- --fix",
     "prepare": "husky install"
   },
@@ -56,7 +56,7 @@
     "@babel/eslint-parser": "^7.21.3",
     "@babel/preset-env": "^7.21.5",
     "@babel/register": "^7.21.0",
-    "@sequencemedia/hooks": "^1.0.396",
+    "@sequencemedia/hooks": "^1.0.401",
     "eslint": "^8.39.0",
     "eslint-config-standard": "^17.0.0",
     "eslint-plugin-import": "^2.27.5",
