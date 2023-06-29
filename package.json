@@ -39,7 +39,7 @@
     "clean": "rimraf lib",
     "prepublishOnly": "npm run build",
     "prebuild": "npm run clean",
-    "lint": "eslint . --ext .mjs --ext .cjs",
+    "lint": "eslint . --ext .mjs,.cjs",
     "lint:fix": "npm run lint -- --fix",
     "prepare": "husky install"
   },
@@ -59,9 +59,6 @@
     "@sequencemedia/hooks": "^1.0.435",
     "eslint": "^8.43.0",
     "eslint-config-standard": "^17.1.0",
-    "eslint-plugin-import": "^2.27.5",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^6.1.1",
     "husky": "^8.0.3",
     "rimraf": "^5.0.1"
   }
