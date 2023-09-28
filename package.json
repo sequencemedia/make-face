@@ -60,6 +60,6 @@
     "eslint": "^8.50.0",
     "eslint-config-standard": "^17.1.0",
     "husky": "^8.0.3",
-    "rimraf": "^5.0.4"
+    "rimraf": "^5.0.5"
   }
 }
