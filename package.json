@@ -48,15 +48,15 @@
     "debug": "^4.3.4",
     "fs-extra": "^11.2.0",
     "glob-all": "^3.3.1",
-    "mime": "^3.0.0"
+    "mime": "^4.0.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.23.4",
-    "@babel/core": "^7.23.3",
+    "@babel/core": "^7.23.5",
     "@babel/eslint-parser": "^7.23.3",
-    "@babel/preset-env": "^7.23.3",
+    "@babel/preset-env": "^7.23.5",
     "@babel/register": "^7.22.15",
-    "@sequencemedia/hooks": "^1.0.464",
+    "@sequencemedia/hooks": "^1.0.465",
     "eslint": "^8.54.0",
     "eslint-config-standard": "^17.1.0",
     "husky": "^8.0.3",
