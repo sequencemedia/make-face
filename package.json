@@ -56,8 +56,8 @@
     "@babel/eslint-parser": "^7.23.3",
     "@babel/preset-env": "^7.23.6",
     "@babel/register": "^7.22.15",
-    "@sequencemedia/hooks": "^1.0.468",
-    "eslint": "^8.55.0",
+    "@sequencemedia/hooks": "^1.0.469",
+    "eslint": "^8.56.0",
     "eslint-config-standard": "^17.1.0",
     "husky": "^8.0.3",
     "rimraf": "^5.0.5"
