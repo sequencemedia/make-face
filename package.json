@@ -41,7 +41,7 @@
     "prebuild": "npm run clean",
     "lint": "eslint . --ext .mjs,.cjs",
     "lint:fix": "npm run lint -- --fix",
-    "prepare": "husky install"
+    "prepare": "husky"
   },
   "dependencies": {
     "commander": "^12.0.0",
