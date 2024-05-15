@@ -1,6 +1,6 @@
 {
   "name": "@sequencemedia/make-face",
-  "version": "1.1.535",
+  "version": "1.1.536",
   "description": "Convert font files into CSS @font-face declarations with embedded Base64 data",
   "keywords": [
     "css",
