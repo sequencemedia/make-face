@@ -32,16 +32,16 @@
     "url": "git+https://github.com/sequencemedia/make-face.git"
   },
   "scripts": {
-    "build": "npm run babel",
-    "build:watch": "npm run babel:watch",
     "babel": "babel src -d lib",
     "babel:watch": "npm run babel -- -w",
+    "build": "npm run babel",
+    "build:watch": "npm run babel:watch",
     "clean": "rimraf lib",
-    "prepublishOnly": "npm run build",
-    "prebuild": "npm run clean",
     "lint": "eslint . --ext .mjs,.cjs",
     "lint:fix": "npm run lint -- --fix",
-    "prepare": "husky"
+    "prebuild": "npm run clean",
+    "prepare": "husky",
+    "prepublishOnly": "npm run build"
   },
   "dependencies": {
     "commander": "^12.1.0",
