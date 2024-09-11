@@ -54,7 +54,7 @@
     "@babel/cli": "^7.25.6",
     "@babel/core": "^7.25.2",
     "@babel/preset-env": "^7.25.4",
-    "@sequencemedia/eslint-config-standard": "^0.0.60",
+    "@sequencemedia/eslint-config-standard": "^0.0.61",
     "@sequencemedia/hooks": "^1.0.551",
     "eslint": "^9.10.0",
     "globals": "^15.9.0",
