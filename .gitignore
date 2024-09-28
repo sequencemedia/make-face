@@ -51,3 +51,6 @@ fonts
 
 # Deps
 .depsrc
+
+# Hooks
+.husky/hooks
