@@ -44,7 +44,7 @@
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
-    "commander": "^12.1.0",
+    "commander": "^13.0.0",
     "debug": "^4.4.0",
     "fs-extra": "^11.2.0",
     "glob-all": "^3.3.1",
