@@ -40,7 +40,7 @@
     "lint": "eslint .",
     "lint:fix": "npm run lint -- --fix",
     "prebuild": "npm run clean",
-    "prepare": "husky",
+    "prepare": "node husky.mjs",
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
